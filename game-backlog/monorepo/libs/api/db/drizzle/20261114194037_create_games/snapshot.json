@@ -1,0 +1,340 @@
+{
+  "type": "base",
+  "version": "9",
+  "dialect": "postgres",
+  "id": "b6cd785c-894f-461a-9d31-4c9262131ea7",
+  "prevIds": [
+    "00000000-0000-0000-0000-000000000000"
+  ],
+  "footprints": [
+    {
+      "statementType": "create_enum",
+      "statementTarget": [
+        "enum",
+        "public",
+        "game_status"
+      ],
+      "writes": [
+        "s|enum|public.game_status",
+        "n|enum|public.game_status",
+        "e|enum|public.game_status",
+        "n|type|public.game_status"
+      ],
+      "reads": [
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "create_enum",
+      "statementTarget": [
+        "enum",
+        "public",
+        "platform"
+      ],
+      "writes": [
+        "s|enum|public.platform",
+        "n|enum|public.platform",
+        "e|enum|public.platform",
+        "n|type|public.platform"
+      ],
+      "reads": [
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "create_table",
+      "statementTarget": [
+        "table",
+        "public",
+        "games"
+      ],
+      "writes": [
+        "s|tbl|public.games",
+        "n|tbl|public.games",
+        "e|tbl|public.games",
+        "n|rel|public.games",
+        "n|type|public.games",
+        "n|rel|public.games_pkey"
+      ],
+      "reads": [
+        "n|sch|public",
+        "n|enum|public.platform",
+        "n|enum|public.game_status"
+      ]
+    },
+    {
+      "statementType": "create_index",
+      "statementTarget": [
+        "index",
+        "public",
+        "games",
+        "games_status_idx"
+      ],
+      "writes": [
+        "s|idx|public.games_status_idx",
+        "n|idx|public.games_status_idx",
+        "e|idx|public.games_status_idx",
+        "n|rel|public.games_status_idx"
+      ],
+      "reads": [
+        "n|tbl|public.games",
+        "n|sch|public",
+        "n|col|public.games.status"
+      ]
+    }
+  ],
+  "ddl": [
+    {
+      "schema": "public",
+      "name": "games",
+      "isRlsEnabled": false,
+      "entityType": "tables"
+    },
+    {
+      "schema": "public",
+      "name": "game_status",
+      "values": [
+        "wishlist",
+        "backlog",
+        "playing",
+        "completed",
+        "dropped"
+      ],
+      "entityType": "enums"
+    },
+    {
+      "schema": "public",
+      "name": "platform",
+      "values": [
+        "pc",
+        "playstation-4",
+        "playstation-5",
+        "nintendo-switch",
+        "nintendo-switch-2",
+        "mobile"
+      ],
+      "entityType": "enums"
+    },
+    {
+      "schema": "public",
+      "table": "games",
+      "name": "id",
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "gen_random_uuid()",
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "games",
+      "name": "title",
+      "type": "varchar(200)",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "games",
+      "name": "platforms",
+      "type": "platform",
+      "typeSchema": "public",
+      "notNull": true,
+      "dimensions": 1,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "games",
+      "name": "genres",
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 1,
+      "default": "'{}'",
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "games",
+      "name": "developer",
+      "type": "varchar(200)",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "games",
+      "name": "publisher",
+      "type": "varchar(200)",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "games",
+      "name": "release_date",
+      "type": "date",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "games",
+      "name": "cover_image_url",
+      "type": "text",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "games",
+      "name": "status",
+      "type": "game_status",
+      "typeSchema": "public",
+      "notNull": true,
+      "dimensions": 0,
+      "default": "'backlog'",
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "games",
+      "name": "rating",
+      "type": "smallint",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "games",
+      "name": "hours_played",
+      "type": "double precision",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "games",
+      "name": "created_at",
+      "type": "timestamp with time zone",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "now()",
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "games",
+      "name": "updated_at",
+      "type": "timestamp with time zone",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "now()",
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "games",
+      "name": "games_status_idx",
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "status",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "concurrently": false,
+      "entityType": "indexes"
+    },
+    {
+      "schema": "public",
+      "table": "games",
+      "name": "games_pkey",
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "entityType": "pks"
+    },
+    {
+      "schema": "public",
+      "table": "games",
+      "name": "games_platforms_not_empty",
+      "value": "cardinality(\"platforms\") >= 1",
+      "entityType": "checks"
+    },
+    {
+      "schema": "public",
+      "table": "games",
+      "name": "games_rating_range",
+      "value": "\"rating\" between 1 and 10",
+      "entityType": "checks"
+    },
+    {
+      "schema": "public",
+      "table": "games",
+      "name": "games_hours_played_non_negative",
+      "value": "\"hours_played\" >= 0",
+      "entityType": "checks"
+    }
+  ]
+}
