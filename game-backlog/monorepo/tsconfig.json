@@ -14,6 +14,9 @@
     },
     {
       "path": "./libs/shared/contracts"
+    },
+    {
+      "path": "./libs/api/db"
     }
   ],
   "compilerOptions": {}
