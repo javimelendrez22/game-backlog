@@ -31,6 +31,13 @@
         "executor": "nx:run-commands",
         "options": {
           "command": "drizzle-kit migrate --config=libs/api/db/drizzle.config.ts"
+        },
+        "configurations": {
+          "test": {
+            "env": {
+              "DB_ENV": "test"
+            }
+          }
         }
       },
       "db-push": {

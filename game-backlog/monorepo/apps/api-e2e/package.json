@@ -14,10 +14,13 @@
         ],
         "dependsOn": [
           "@org/api:build",
-          "@org/api:serve"
+          "@org/api:serve-e2e"
         ],
         "options": {
-          "cwd": "apps/api-e2e"
+          "cwd": "apps/api-e2e",
+          "env": {
+            "PORT": "3333"
+          }
         }
       }
     }

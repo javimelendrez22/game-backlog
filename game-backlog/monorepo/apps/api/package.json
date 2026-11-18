@@ -60,6 +60,26 @@
             "buildTarget": "@org/api:build:production"
           }
         }
+      },
+      "serve-e2e": {
+        "continuous": true,
+        "executor": "@nx/js:node",
+        "defaultConfiguration": "test",
+        "dependsOn": [
+          "build"
+        ],
+        "readyWhen": {
+          "signal": true
+        },
+        "options": {
+          "buildTarget": "@org/api:build",
+          "runBuildTargetDependencies": false
+        },
+        "configurations": {
+          "test": {
+            "buildTarget": "@org/api:build:development"
+          }
+        }
       }
     }
   },
