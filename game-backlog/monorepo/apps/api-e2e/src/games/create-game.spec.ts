@@ -35,6 +35,55 @@ describe('POST /api/games', () => {
     response: { status: 400 },
     });
   });
+
+  it('echoes back every field of a full body', async () => {
+    const body: CreateGameInput = {
+      igdbId: 201,
+      title: 'Hollow Knight',
+      platforms: ['pc', 'nintendo-switch'],
+      genres: ['metroidvania', 'platformer'],
+      developer: 'Team Cherry',
+      publisher: 'Team Cherry',
+      releaseDate: '2017-02-24',
+      coverImageUrl: 'https://example.com/hollow-knight.jpg',
+      status: 'completed',
+      rating: 9,
+      hoursPlayed: 42.5,
+    };
+    const res = await axios.post<Game>('/api/games', body);
+
+    expect(res.status).toBe(201);
+    // toEqual (not objectContaining): fails if the response gains or loses a field.
+    expect(res.data).toEqual({
+      ...body,
+      id: expect.stringMatching(
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/,
+      ),
+      createdAt: expect.any(String),
+      updatedAt: expect.any(String),
+    });
+    expect(Number.isNaN(Date.parse(res.data.createdAt))).toBe(false);
+    expect(Number.isNaN(Date.parse(res.data.updatedAt))).toBe(false);
+  });
+
+  // One bad field per case, so each validation rule is pinned down on its own.
+  it.each([
+    ['title is missing', { platforms: ['pc'] }, 'title'],
+    ['platforms is empty', { title: 'x', platforms: [] }, 'platforms'],
+    ['rating is above 10', { title: 'x', platforms: ['pc'], rating: 11 }, 'rating'],
+    ['platform is unknown', { title: 'x', platforms: ['xbox'] }, 'platforms'],
+  ])('returns 400 when %s', async (_case, body, field) => {
+    const res = await axios.post<{ issues: Record<string, string[]> }>(
+      '/api/games',
+      body,
+      { validateStatus: () => true },
+    );
+
+    expect(res.status).toBe(400);
+    expect(res.data.issues[field]).toBeDefined();
+    // Only the broken field is reported.
+    expect(Object.keys(res.data.issues)).toEqual([field]);
+  });
 });
 
 describe('POST /api/games with igdbId', () => {
