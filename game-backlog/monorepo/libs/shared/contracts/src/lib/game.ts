@@ -21,6 +21,8 @@ export type GameStatus = z.infer<typeof gameStatusSchema>;
 /** Game as returned by the API. */
 export const gameSchema = z.object({
   id: idSchema,
+  /** IGDB game id for imported games (unique across the backlog); null if added by hand. */
+  igdbId: z.number().int().positive().nullable(),
   title: z.string().min(1).max(200),
   platforms: z.array(platformSchema).min(1),
   genres: z.array(z.string().min(1).max(50)).max(20),
@@ -39,6 +41,7 @@ export type Game = z.infer<typeof gameSchema>;
 
 /** POST /games — server owns id and timestamps; optional fields get defaults. */
 export const createGameSchema = z.object({
+  igdbId: gameSchema.shape.igdbId.default(null),
   title: gameSchema.shape.title,
   platforms: gameSchema.shape.platforms,
   genres: gameSchema.shape.genres.default([]),
@@ -53,7 +56,7 @@ export const createGameSchema = z.object({
 export type CreateGame = z.infer<typeof createGameSchema>;
 export type CreateGameInput = z.input<typeof createGameSchema>;
 
-/** PATCH /games/:id — any subset of the creatable fields. */
+/** PATCH /games/:id — any subset of the creatable fields except igdbId, which is fixed at import. */
 export const updateGameSchema = z
   .object({
     title: gameSchema.shape.title,

@@ -7,6 +7,7 @@ describe('ZodValidationPipe', () => {
 
   it('returns parsed data with schema defaults applied', () => {
     expect(pipe.transform({ title: 'Hades', platforms: ['pc'] })).toEqual({
+      igdbId: null,
       title: 'Hades',
       platforms: ['pc'],
       genres: [],

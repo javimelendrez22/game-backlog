@@ -27,6 +27,18 @@ describe('game contracts', () => {
     expect(createGameSchema.safeParse({ title: 'x', platforms: ['xbox'] }).success).toBe(false);
   });
 
+  it('defaults igdbId to null and only accepts positive integers', () => {
+    expect(createGameSchema.parse({ title: 'x', platforms: ['pc'] }).igdbId).toBeNull();
+    expect(
+      createGameSchema.parse({ title: 'x', platforms: ['pc'], igdbId: 1942 }).igdbId,
+    ).toBe(1942);
+    for (const igdbId of [0, -5, 1.5, '1942']) {
+      expect(
+        createGameSchema.safeParse({ title: 'x', platforms: ['pc'], igdbId }).success,
+      ).toBe(false);
+    }
+  });
+
   it('requires at least one field on update', () => {
     expect(updateGameSchema.safeParse({}).success).toBe(false);
     expect(updateGameSchema.safeParse({ status: 'completed' }).success).toBe(true);

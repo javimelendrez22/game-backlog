@@ -10,11 +10,13 @@ import {
   date,
   doublePrecision,
   index,
+  integer,
   pgEnum,
   pgTable,
   smallint,
   text,
   timestamp,
+  uniqueIndex,
   uuid,
   varchar,
 } from 'drizzle-orm/pg-core';
@@ -36,6 +38,8 @@ export const games = pgTable(
   'games',
   {
     id: uuid('id').primaryKey().defaultRandom(),
+    /** IGDB game id for imported games; unique, null for games added by hand. */
+    igdbId: integer('igdb_id'),
     title: varchar('title', { length: 200 }).notNull(),
     platforms: platformEnum('platforms').array().notNull(),
     genres: text('genres').array().notNull().default(sql`'{}'::text[]`),
@@ -57,6 +61,8 @@ export const games = pgTable(
   },
   (t) => [
     index('games_status_idx').on(t.status),
+    uniqueIndex('games_igdb_id_unique').on(t.igdbId),
+    check('games_igdb_id_positive', sql`${t.igdbId} > 0`),
     check('games_platforms_not_empty', sql`cardinality(${t.platforms}) >= 1`),
     check('games_rating_range', sql`${t.rating} between 1 and 10`),
     check('games_hours_played_non_negative', sql`${t.hoursPlayed} >= 0`),

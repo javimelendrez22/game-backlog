@@ -1,0 +1,120 @@
+{
+  "type": "diff",
+  "version": "9",
+  "dialect": "postgres",
+  "id": "9545f6e1-b958-404f-94fe-832474170070",
+  "prevIds": [
+    "b6cd785c-894f-461a-9d31-4c9262131ea7"
+  ],
+  "footprints": [
+    {
+      "statementType": "add_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "games",
+        "igdb_id"
+      ],
+      "writes": [
+        "s|col|public.games.igdb_id",
+        "n|col|public.games.igdb_id",
+        "e|col|public.games.igdb_id"
+      ],
+      "reads": [
+        "n|tbl|public.games",
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "create_index",
+      "statementTarget": [
+        "index",
+        "public",
+        "games",
+        "games_igdb_id_unique"
+      ],
+      "writes": [
+        "s|idx|public.games_igdb_id_unique",
+        "n|idx|public.games_igdb_id_unique",
+        "e|idx|public.games_igdb_id_unique",
+        "n|rel|public.games_igdb_id_unique"
+      ],
+      "reads": [
+        "n|tbl|public.games",
+        "n|sch|public",
+        "n|col|public.games.igdb_id"
+      ]
+    },
+    {
+      "statementType": "add_check",
+      "statementTarget": [
+        "table",
+        "public",
+        "games"
+      ],
+      "writes": [
+        "s|ck|public.games.games_igdb_id_positive",
+        "n|ck|public.games.games_igdb_id_positive",
+        "e|ck|public.games.games_igdb_id_positive",
+        "n|con|public.games.games_igdb_id_positive"
+      ],
+      "reads": [
+        "n|tbl|public.games",
+        "n|sch|public",
+        "n|col|public.games.igdb_id"
+      ]
+    }
+  ],
+  "deltas": [
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "games",
+        "name": "igdb_id",
+        "type": "integer",
+        "typeSchema": null,
+        "notNull": false,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "games",
+        "name": "games_igdb_id_unique",
+        "nameExplicit": true,
+        "columns": [
+          {
+            "value": "igdb_id",
+            "isExpression": false,
+            "asc": true,
+            "nullsFirst": false,
+            "opclass": null
+          }
+        ],
+        "isUnique": true,
+        "where": null,
+        "with": "",
+        "method": "btree",
+        "concurrently": false,
+        "entityType": "indexes"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "games",
+        "name": "games_igdb_id_positive",
+        "value": "\"igdb_id\" > 0",
+        "entityType": "checks"
+      }
+    }
+  ]
+}
