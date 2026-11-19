@@ -1,49 +1,25 @@
-import NxWelcome from './nx-welcome';
-
-import { Route, Routes, Link } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
+import { AppShell } from './layouts/AppShell';
+import { FocusLayout } from './layouts/FocusLayout';
+import { AddGamePage } from './pages/AddGamePage';
+import { GameDetailsPage } from './pages/GameDetailsPage';
+import { LibraryPage } from './pages/LibraryPage';
+import { NotFoundPage } from './pages/NotFoundPage';
+import { StatsPage } from './pages/StatsPage';
 
 export function App() {
   return (
-    <div>
-      <NxWelcome title="@org/web" />
-
-      {/* START: routes */}
-      {/* These routes and navigation have been generated for you */}
-      {/* Feel free to move and update them to fit your needs */}
-      <br />
-      <hr />
-      <br />
-      <nav>
-        <ul>
-          <li>
-            <Link to="/">Home</Link>
-          </li>
-          <li>
-            <Link to="/page-2">Page 2</Link>
-          </li>
-        </ul>
-      </nav>
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <div>
-              This is the generated root route.{' '}
-              <Link to="/page-2">Click here for page 2.</Link>
-            </div>
-          }
-        />
-        <Route
-          path="/page-2"
-          element={
-            <div>
-              <Link to="/">Click here to go back to root page.</Link>
-            </div>
-          }
-        />
-      </Routes>
-      {/* END: routes */}
-    </div>
+    <Routes>
+      <Route element={<AppShell />}>
+        <Route index element={<LibraryPage />} />
+      </Route>
+      <Route element={<FocusLayout />}>
+        <Route path="games/new" element={<AddGamePage />} />
+        <Route path="games/:id" element={<GameDetailsPage />} />
+        <Route path="stats" element={<StatsPage />} />
+        <Route path="*" element={<NotFoundPage />} />
+      </Route>
+    </Routes>
   );
 }
 

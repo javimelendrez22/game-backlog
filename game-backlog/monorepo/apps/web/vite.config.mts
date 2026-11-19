@@ -1,6 +1,7 @@
 /// <reference types='vitest' />
-import { defineConfig } from 'vite';
+import { defaultClientConditions, defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import tailwindcss from '@tailwindcss/vite';
 import { nxReadySignal } from '@nx/vite/plugins/nx-ready-signal.plugin';
 
 export default defineConfig(() => ({
@@ -9,12 +10,19 @@ export default defineConfig(() => ({
   server: {
     port: 4200,
     host: 'localhost',
+    proxy: {
+      '/api': 'http://localhost:3000',
+    },
+  },
+  resolve: {
+    // Load workspace libs (e.g. @org/contracts) from source, not their dist.
+    conditions: ['@org/source', ...defaultClientConditions],
   },
   preview: {
     port: 4300,
     host: 'localhost',
   },
-  plugins: [react(), nxReadySignal()],
+  plugins: [react(), tailwindcss(), nxReadySignal()],
   // Uncomment this if you are using workers.
   // worker: {
   //  plugins: [],

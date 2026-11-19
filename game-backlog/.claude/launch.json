@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "api",
+      "runtimeExecutable": "sh",
+      "runtimeArgs": ["-c", "cd monorepo && npm exec nx -- serve @org/api"],
+      "port": 3000
+    },
+    {
+      "name": "web",
+      "runtimeExecutable": "sh",
+      "runtimeArgs": ["-c", "cd monorepo && npm exec nx -- serve @org/web"],
+      "port": 4200
+    }
+  ]
+}

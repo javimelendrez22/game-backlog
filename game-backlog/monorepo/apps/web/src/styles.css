@@ -1,0 +1,63 @@
+@import 'tailwindcss';
+
+/* GameLibrary design tokens (from the "Game Tracker" design canvas). */
+@theme {
+  --font-sans: 'Barlow', system-ui, sans-serif;
+  --font-display: 'Barlow Condensed', 'Barlow', system-ui, sans-serif;
+
+  --color-bg: #111318;
+  --color-sidebar: #161920;
+  --color-surface: #1c2029;
+  --color-surface-sunken: #151820;
+  --color-border: #2a2f3b;
+  --color-border-subtle: #262a35;
+  --color-border-strong: #3a4050;
+  --color-selected: #2e3442;
+  --color-nav-selected: #232835;
+
+  --color-ink: #eef0f4;
+  --color-ink-soft: #c9cdd6;
+  --color-ink-muted: #a4aab8;
+  --color-cover-ink: #f4f1ea;
+
+  --color-accent: #4da3ff;
+  --color-accent-hover: #9ccbff;
+  --color-on-accent: #111318;
+
+  --color-status-wishlist: #f49ad2;
+  --color-status-backlog: #8fe3c0;
+  --color-status-playing: #4da3ff;
+  --color-status-completed: #f7be5c;
+  --color-status-dropped: #8a92a5;
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+  }
+
+  body {
+    margin: 0;
+    background: var(--color-bg);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a {
+    color: var(--color-accent);
+  }
+
+  a:hover {
+    color: var(--color-accent-hover);
+  }
+
+  button {
+    cursor: pointer;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+}
