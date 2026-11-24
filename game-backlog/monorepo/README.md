@@ -8,6 +8,22 @@
 
 🚀 If you haven't connected to Nx Cloud yet, [complete your setup here](https://cloud.nx.app/get-started). Get faster builds with remote caching, distributed task execution, and self-healing CI. [See how your workspace can benefit](#nx-cloud).
 
+## IGDB setup
+
+The Add a game page searches [IGDB](https://www.igdb.com/) through the API (`GET /api/igdb/search`). Picked games are copied into our own database on save, so we never ask IGDB about them again. IGDB authenticates with a Twitch app:
+
+1. Log in at <https://dev.twitch.tv/console>. Twitch requires two-factor authentication on the account to register apps.
+2. **Applications → Register Your Application**: any unique name, OAuth Redirect URL `http://localhost`, category *Application Integration*, client type **Confidential**.
+3. Open the app, copy the **Client ID**, then click **New Secret** and copy the **Client Secret**.
+4. Add both to `apps/api/.env` (gitignored):
+
+   ```
+   IGDB_CLIENT_ID=...
+   IGDB_CLIENT_SECRET=...
+   ```
+
+The API exchanges them for an app access token (client-credentials grant, valid for about 60 days), caches it in memory, and renews it when it expires. Without them, search returns 503 and games can still be added by hand.
+
 ## Generate a library
 
 ```sh

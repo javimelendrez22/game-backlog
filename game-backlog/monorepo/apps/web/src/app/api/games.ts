@@ -1,7 +1,15 @@
 import axios from 'axios';
-import { keepPreviousData, useQuery } from '@tanstack/react-query';
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
 import {
   gameListResponseSchema,
+  gameSchema,
+  type CreateGameInput,
+  type Game,
   type GameListResponse,
   type GameStatus,
   type Platform,
@@ -37,5 +45,19 @@ export function useGames(filter: GamesFilter = {}) {
     queryKey: gamesKeys.list(filter),
     queryFn: () => listGames(filter),
     placeholderData: keepPreviousData,
+  });
+}
+
+export async function createGame(input: CreateGameInput): Promise<Game> {
+  const { data } = await api.post('/games', input);
+  return gameSchema.parse(data);
+}
+
+/** POST /api/games, then refetch every games list so the new game shows up. */
+export function useCreateGame() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: createGame,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: gamesKeys.all }),
   });
 }
