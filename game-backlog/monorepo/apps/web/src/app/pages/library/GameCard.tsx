@@ -18,7 +18,7 @@ export function GameCard({ game }: { game: Game }) {
         <span className="text-[15px] font-semibold">{game.title}</span>
         <span className="text-[13px] text-ink-muted">{platformLine(game)}</span>
       </div>
-      <div className="flex items-center justify-between gap-2 px-1 text-[13px]">
+      <div className="mt-auto flex items-center justify-between gap-2 px-1 text-[13px]">
         <StatusBadge status={game.status} />
         <span className="text-ink-muted">{metaLine(game)}</span>
       </div>
