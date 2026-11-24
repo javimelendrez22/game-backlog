@@ -67,6 +67,14 @@ export function PlusIcon(props: IconProps) {
   );
 }
 
+export function TrashIcon(props: IconProps & { size?: number }) {
+  return (
+    <Pixel viewBox="0 0 8 9" size={14} {...props}>
+      <path d="M3 0h2v1H3zM0 1h8v1H0zM1 2h1v7H1zM6 2h1v7H6zM2 8h4v1H2zM3 3h1v4H3zM4 3h1v4H4z" />
+    </Pixel>
+  );
+}
+
 export function BackIcon(props: IconProps) {
   return (
     <Pixel viewBox="0 0 7 7" size={14} {...props}>

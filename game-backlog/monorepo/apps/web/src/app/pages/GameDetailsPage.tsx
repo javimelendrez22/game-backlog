@@ -1,11 +1,15 @@
-import type { ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { PLATFORM_LABELS, type Game } from '@org/contracts';
 import { isNotFound, useGame } from '../api/games';
+import { FocusActions } from '../layouts/FocusLayout';
 import { formatDate, formatHours } from '../lib/game-display';
+import { Button } from '../ui/Button';
 import { GameCover } from '../ui/GameCover';
+import { TrashIcon } from '../ui/icons';
 import { PageHeader } from '../ui/PageHeader';
 import { StatusBadge } from '../ui/StatusBadge';
+import { DeleteGameDialog } from './game-details/DeleteGameDialog';
 
 const card = 'rounded-[14px] border border-border bg-surface';
 const label = 'text-[13px] text-ink-muted';
@@ -181,6 +185,25 @@ function Details({ game }: { game: Game }) {
   );
 }
 
+function DeleteGameAction({ game }: { game: Game }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <FocusActions>
+        <Button
+          variant="danger-outline"
+          className="px-4"
+          onClick={() => setOpen(true)}
+        >
+          <TrashIcon />
+          Delete game
+        </Button>
+      </FocusActions>
+      <DeleteGameDialog game={game} open={open} onClose={() => setOpen(false)} />
+    </>
+  );
+}
+
 function DetailsSkeleton() {
   return (
     <div
@@ -204,6 +227,7 @@ export function GameDetailsPage() {
   if (game) {
     return (
       <>
+        <DeleteGameAction game={game} />
         <Hero game={game} />
         <Details game={game} />
       </>

@@ -52,6 +52,14 @@ export class GamesService {
     return row ? toGame(row) : null;
   }
 
+  /**
+   * Deletes the game if it exists. A missing id is not an error: the caller
+   * wanted it gone, and it is (see libs/shared/contracts/README.md).
+   */
+  async remove(id: string): Promise<void> {
+    await this.db.delete(schema.games).where(eq(schema.games.id, id));
+  }
+
   /** GET /api/games: filtered, sorted page of games plus the total match count. */
   async list(query: ListGamesQuery): Promise<GameListResponse> {
     const {

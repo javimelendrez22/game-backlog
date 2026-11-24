@@ -1,7 +1,9 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  HttpCode,
   NotFoundException,
   Param,
   Post,
@@ -46,6 +48,18 @@ export class GamesController {
       throw new NotFoundException({ message: 'Game not found', id });
     }
     return game;
+  }
+
+  /**
+   * DELETE /api/games/:id — 204 whether or not the game existed, so a retry or
+   * a second tab gets the same answer. 400 (`issues.id`) for a non-uuid id.
+   */
+  @Delete(':id')
+  @HttpCode(204)
+  remove(
+    @Param(new ZodValidationPipe(gameIdParamSchema)) { id }: GameIdParam,
+  ): Promise<void> {
+    return this.games.remove(id);
   }
 
   /** POST /api/games — add a game to the backlog. Responds 201 with the created game. */

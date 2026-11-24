@@ -96,3 +96,22 @@ export function useCreateGame() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: gamesKeys.all }),
   });
 }
+
+export async function deleteGame(id: string): Promise<void> {
+  await api.delete(`/games/${id}`);
+}
+
+/**
+ * DELETE /api/games/:id. On success the game's detail cache is dropped (so it
+ * can't flash back as placeholder data) and every list refetches without it.
+ */
+export function useDeleteGame() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: deleteGame,
+    onSuccess: (_data, id) => {
+      queryClient.removeQueries({ queryKey: gamesKeys.detail(id) });
+      return queryClient.invalidateQueries({ queryKey: gamesKeys.lists });
+    },
+  });
+}
