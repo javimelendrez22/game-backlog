@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { isAxiosError } from 'axios';
 import {
   keepPreviousData,
   useMutation,
@@ -37,7 +37,9 @@ export async function listGames(
 
 export const gamesKeys = {
   all: ['games'] as const,
+  lists: ['games', 'list'] as const,
   list: (filter: GamesFilter) => ['games', 'list', filter] as const,
+  detail: (id: string) => ['games', 'detail', id] as const,
 };
 
 export function useGames(filter: GamesFilter = {}) {
@@ -45,6 +47,39 @@ export function useGames(filter: GamesFilter = {}) {
     queryKey: gamesKeys.list(filter),
     queryFn: () => listGames(filter),
     placeholderData: keepPreviousData,
+  });
+}
+
+export async function getGame(id: string): Promise<Game> {
+  const { data } = await api.get(`/games/${id}`);
+  return gameSchema.parse(data);
+}
+
+/** True for an axios error the API answered with 404. */
+export function isNotFound(error: unknown): boolean {
+  return isAxiosError(error) && error.response?.status === 404;
+}
+
+/**
+ * GET /api/games/:id. Coming from the library, the game is usually already in a
+ * cached list page, so that copy shows at once while the fresh one loads.
+ */
+export function useGame(id: string) {
+  const queryClient = useQueryClient();
+  return useQuery({
+    queryKey: gamesKeys.detail(id),
+    queryFn: () => getGame(id),
+    placeholderData: () => {
+      for (const [, page] of queryClient.getQueriesData<GameListResponse>({
+        queryKey: gamesKeys.lists,
+      })) {
+        const hit = page?.items.find((g) => g.id === id);
+        if (hit) return hit;
+      }
+      return undefined;
+    },
+    // A missing game stays missing; only retry other failures.
+    retry: (count, error) => !isNotFound(error) && count < 1,
   });
 }
 

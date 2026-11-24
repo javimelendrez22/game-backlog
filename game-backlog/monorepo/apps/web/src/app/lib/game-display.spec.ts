@@ -1,5 +1,7 @@
 import {
   coverColor,
+  formatDate,
+  formatHours,
   initials,
   isGameStatus,
   metaLine,
@@ -63,5 +65,25 @@ describe('statuses', () => {
     expect(isGameStatus('playing')).toBe(true);
     expect(isGameStatus('owned')).toBe(false);
     expect(isGameStatus(null)).toBe(false);
+  });
+});
+
+describe('formatDate', () => {
+  it.each([
+    ['2025-09-18', 'Sep 18, 2025'],
+    ['2026-01-01', 'Jan 1, 2026'],
+    ['2026-11-21T22:05:00.000Z', 'Nov 21, 2026'],
+  ])('%s -> %s', (value, expected) => {
+    expect(formatDate(value)).toBe(expected);
+  });
+});
+
+describe('formatHours', () => {
+  it.each([
+    [32, '32 h'],
+    [0, '0 h'],
+    [12.5, '12.5 h'],
+  ])('%s -> %s', (hours, expected) => {
+    expect(formatHours(hours)).toBe(expected);
   });
 });

@@ -38,7 +38,12 @@ const game = (over: Partial<Game>): Game => ({
 });
 
 const games = [
-  game({}),
+  game({
+    igdbId: 119388,
+    developer: 'Northlight Forge',
+    releaseDate: '2025-09-18',
+    rating: 8,
+  }),
   game({
     id: '00000000-0000-4000-8000-000000000002',
     title: 'Glass Orchard',
@@ -71,6 +76,15 @@ function renderAt(path: string) {
   );
 }
 
+const notFound = () =>
+  new AxiosError('Not Found', 'ERR_BAD_REQUEST', undefined, undefined, {
+    status: 404,
+    statusText: 'Not Found',
+    data: { message: 'Game not found' },
+    headers: {},
+    config: { headers: new AxiosHeaders() },
+  });
+
 const igdbResults: IgdbSearchResponse = {
   items: [
     {
@@ -100,6 +114,12 @@ beforeEach(() => {
   post.mockReset();
   get.mockImplementation(async (url, config) => {
     if (url === '/igdb/search') return { data: igdbResults };
+    const detail = url.match(/^\/games\/([^/]+)$/);
+    if (detail) {
+      const found = games.find((g) => g.id === detail[1]);
+      if (found) return { data: found };
+      throw notFound();
+    }
     const status = (config?.params as { status?: string } | undefined)?.status;
     return { data: page(games.filter((g) => !status || g.status === status)) };
   });
@@ -292,5 +312,67 @@ describe('AddGamePage', () => {
     });
 
     expect(await screen.findByText(/IGDB search isn't set up/)).toBeTruthy();
+  });
+});
+
+describe('GameDetailsPage', () => {
+  const ashen = '/games/00000000-0000-4000-8000-000000000001';
+
+  it('shows the game fetched by id', async () => {
+    renderAt(ashen);
+
+    expect(
+      await screen.findByRole('heading', { level: 1, name: 'Ashen Circuit' }),
+    ).toBeTruthy();
+    expect(get).toHaveBeenCalledWith(ashen);
+    expect(screen.getByText('IGDB #119388')).toBeTruthy();
+    expect(screen.getByText('Northlight Forge · 2025')).toBeTruthy();
+    expect(screen.getByText('8 / 10')).toBeTruthy();
+    expect(screen.getByText('32 h')).toBeTruthy();
+
+    const details = screen.getByRole('region', { name: 'Details' });
+    expect(within(details).getByText('Sep 18, 2025')).toBeTruthy();
+    // Publisher is missing on this game.
+    expect(within(details).getByText('Unknown')).toBeTruthy();
+  });
+
+  it('shows placeholders for a game with no extra info', async () => {
+    renderAt('/games/00000000-0000-4000-8000-000000000002');
+
+    expect(
+      await screen.findByRole('heading', { level: 1, name: 'Glass Orchard' }),
+    ).toBeTruthy();
+    expect(screen.getByText('Added by hand')).toBeTruthy();
+    expect(screen.getByText('No developer or release date yet')).toBeTruthy();
+    expect(screen.getByText('Not rated')).toBeTruthy();
+    expect(screen.getByText('Not tracked')).toBeTruthy();
+  });
+
+  it('opens from a library card', async () => {
+    renderAt('/');
+    const grid = (await screen.findByRole('heading', { name: 'Your games' }))
+      .closest('section') as HTMLElement;
+    fireEvent.click(
+      await within(grid).findByRole('link', { name: /Glass Orchard/ }),
+    );
+
+    expect(screen.getByTestId('location').textContent).toBe(
+      '/games/00000000-0000-4000-8000-000000000002',
+    );
+    // The cached list copy renders straight away, before the detail fetch lands.
+    expect(
+      screen.getByRole('heading', { level: 1, name: 'Glass Orchard' }),
+    ).toBeTruthy();
+  });
+
+  it('says so when the game does not exist', async () => {
+    renderAt('/games/00000000-0000-4000-8000-0000000000ff');
+
+    expect(
+      await screen.findByRole('heading', { level: 1, name: 'Game not found' }),
+    ).toBeTruthy();
+    expect(
+      screen.getByRole('link', { name: 'Go to your library' }),
+    ).toBeTruthy();
   });
 });

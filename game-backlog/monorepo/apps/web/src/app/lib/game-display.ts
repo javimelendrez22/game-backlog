@@ -66,8 +66,21 @@ export function initials(title: string): string {
     .join('');
 }
 
-function formatHours(hours: number): string {
+export function formatHours(hours: number): string {
   return `${Number.isInteger(hours) ? hours : hours.toFixed(1)} h`;
+}
+
+/**
+ * "Sep 18, 2025" from either a date ("2025-09-18") or a timestamp.
+ * Date-only strings are read at noon UTC so no timezone shifts them a day.
+ */
+export function formatDate(value: string): string {
+  const date = new Date(value.length === 10 ? `${value}T12:00:00Z` : value);
+  return date.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
 }
 
 /** Short secondary line on a game card, e.g. "32 h played" or "Not started". */

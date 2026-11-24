@@ -77,6 +77,7 @@ export const updateGameSchema = z
 export type UpdateGame = z.infer<typeof updateGameSchema>;
 
 export const gameIdParamSchema = z.object({ id: idSchema });
+export type GameIdParam = z.infer<typeof gameIdParamSchema>;
 
 export const gameSortFieldSchema = z.enum([
   'title',

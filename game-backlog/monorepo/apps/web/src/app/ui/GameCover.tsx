@@ -8,13 +8,14 @@ export function GameCover({
   className = '',
 }: {
   game: Pick<Game, 'id' | 'title' | 'coverImageUrl'>;
-  size?: 'sm' | 'md';
+  size?: 'sm' | 'md' | 'lg';
   className?: string;
 }) {
-  const shape =
-    size === 'sm'
-      ? 'rounded-[10px] p-2 text-[22px]'
-      : 'rounded-[11px] p-3.5 text-[40px]';
+  const shape = {
+    sm: 'rounded-[10px] p-2 text-[22px]',
+    md: 'rounded-[11px] p-3.5 text-[40px]',
+    lg: 'rounded-[18px] p-6 text-[72px]',
+  }[size];
 
   if (game.coverImageUrl) {
     return (

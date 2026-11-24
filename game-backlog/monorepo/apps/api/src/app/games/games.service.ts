@@ -42,6 +42,16 @@ export class GamesService {
     }
   }
 
+  /** One game by id, or null when no row matches (the caller decides what that means). */
+  async findById(id: string): Promise<Game | null> {
+    const [row] = await this.db
+      .select()
+      .from(schema.games)
+      .where(eq(schema.games.id, id))
+      .limit(1);
+    return row ? toGame(row) : null;
+  }
+
   /** GET /api/games: filtered, sorted page of games plus the total match count. */
   async list(query: ListGamesQuery): Promise<GameListResponse> {
     const {
